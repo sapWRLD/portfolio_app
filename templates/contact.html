@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block head%}
+  <title>Contact Me</title>
+  {% endblock%}
+
+{%block body%}
+
+  <section class="intro">
+    <h1>Get in Touch</h1>
+    <p>I would love to hear from you! Fill out the form below or reach me via email.</p>
+  </section>
+
+
+  <section class="contact-section">
+    <div class="contact-container">
+      <form method="POST" action="{{ url_for('contact') }}">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.name.label }}
+            {{ form.name(class="") }}
+        </div>
+        <div class="form-group">
+            {{ form.email.label }}
+            {{ form.email(class="") }}
+        </div>
+        <div class="form-group">
+            {{ form.subject.label }}
+            {{ form.subject(class="") }}
+        </div>
+        <div class="form-group">
+            {{ form.message.label }}
+            {{ form.message(class="") }}
+        </div>
+        <button type="submit">Send Message</button>
+        </form>
+
+      <div class="contact-info">
+        <h3>Contact Info</h3>
+        <p>Email: <a href="mailto:Tomkerstens27@gmail.com">Tomkerstens27@gmail.com</a></p>
+        <p>Download my CV: <a href="{{ url_for('static', filename='images/Cv Tom Kerstens.pdf') }}" download="Cv Tom Kerstens.pdf">Download CV</a></p>
+        <div class="shortcuts">
+            <a href="https://github.com/sapWRLD" target="_blank"><img src="https://cdn.jsdelivr.net/npm/simple-icons@3.13.0/icons/github.svg", alt="Github"></a>
+            <a href="https://be.linkedin.com/in/tom-kerstens-a3a671260?trk=people-guest_people_search-card" target="_blank"><img src="https://cdn.jsdelivr.net/npm/simple-icons@3.13.0/icons/linkedin.svg", alt="LinkedIn"></a>            
+        </div>
+
+      </div>
+    </div>
+  </section>
+{% endblock %}

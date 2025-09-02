@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    
+    <!-- jQuery library (for DOM manipulation) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>    
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header & Navbar -->
+    <header>
+        <nav class="navbar">
+            <ul class="nav-list">
+                <li><a href="/">Home</a></li>
+                <li><a href="/projects">Projects</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+            <ul class="admin-list">
+                {% if current_user.is_authenticated %}
+                    <li><a href="/dashboard">Dashboard</a></li>
+                {% endif %}
+                <li><a href="/login">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    {% block body %}{% endblock %}
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <p>© <span id="spanYear"></span> Tom K. All rights reserved. Created by <strong>Tom K</strong></p>
+        <script src="{{ url_for('static', filename='js/base.js') }}"></script>
+    </footer>
+</body>
+
+</html>

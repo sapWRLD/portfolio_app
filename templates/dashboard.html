@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block head %}
+<title>Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Admin Panel</h2>
+    <ul>
+      <li><a href="#users" class="active">Users</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#messages">Messages</a></li>
+    </ul>
+  </div>
+
+  <!-- Main content -->
+  <div class="main">
+    <h1>Welcome {{ name }}</h1>
+
+    <!-- Users Section -->
+    <section id="users">
+      <h2>Users</h2>
+      <button class="modalbtn" onclick="openModal('modal-add-user')">Add User</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Actions</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+          <td>{{ user.id }}</td>
+          <td>{{ user.user_name }}</td>
+          <td>
+            <button
+              class="edit-user-btn"
+              data-id="{{ user.id }}"
+              data-username="{{ user.user_name }}"
+            >Edit</button>
+            <a href="{{ url_for('delete_user', user_id=user.id) }}" onclick="return confirm('Delete user?')">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects">
+      <h2>Projects</h2>
+      <button class="modalbtn" onclick="openModal('modal-add-project')">Add Project</button>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Title</th>
+          <th>Source Code</th>
+          <th>Image Loc</th>
+          <th>Actions</th>
+        </tr>
+        {% for project in projects %}
+        <tr>
+          <td>{{ project.id }}</td>
+          <td>{{ project.title }}</td>
+          <td><a href="{{ project.source_code }}" target="_blank">{{ project.source_code }}</a></td>
+          <td>{{ project.image }}</td>
+          <td>
+            <button
+              class="edit-project-btn"
+              data-id="{{ project.id }}"
+              data-title="{{ project.title }}"
+              data-text="{{ project.text }}"
+              data-source="{{ project.source_code }}"
+              data-image="{{ project.image }}"
+            >Edit</button>
+            <a href="{{ url_for('delete_project', project_id=project.id) }}" onclick="return confirm('Delete project?')">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </section>
+
+    <!-- Messages Section -->
+    <section id="messages">
+      <h2>Messages</h2>
+      <table>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Subject</th>
+          <th>Text</th>
+          <th>Actions</th>
+        </tr>
+        {% for msg in messages %}
+        <tr>
+          <td>{{ msg.id }}</td>
+          <td>{{ msg.name }}</td>
+          <td>{{ msg.email }}</td>
+          <td>{{ msg.subject }}</td>
+          <td class="message-cell">{{ msg.message }}</td>
+          <td>
+            <button
+              class="view-message-btn"
+              data-name="{{ msg.name }}"
+              data-email="{{ msg.email }}"
+              data-subject="{{ msg.subject }}"
+              data-message="{{ msg.message }}"
+            >View</button>
+            <a href="{{ url_for('delete_message', msg_id=msg.id) }}" onclick="return confirm('Delete message?')">Delete</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </section>
+  </div>
+</div>
+
+<!-- Modals -->
+{% include 'modals.html' %}
+
+<!-- JS -->
+<script>
+function openModal(modalId) {
+  document.getElementById(modalId).style.display = 'flex';
+}
+function closeModal(modalId) {
+  document.getElementById(modalId).style.display = 'none';
+}
+
+// Close buttons
+document.querySelectorAll('.close-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    btn.closest('.modal').style.display = 'none';
+  });
+});
+
+// Close when clicking outside
+window.onclick = function(event) {
+  document.querySelectorAll('.modal').forEach(modal => {
+    if(event.target == modal) modal.style.display = 'none';
+  });
+}
+
+// Users
+document.querySelectorAll('.edit-user-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('edit-user-id').value = btn.dataset.id;
+    document.getElementById('edit-user-name').value = btn.dataset.username;
+    openModal('modal-edit-user');
+  });
+});
+
+// Projects
+document.querySelectorAll('.edit-project-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('edit-project-id').value = btn.dataset.id;
+    document.getElementById('edit-project-title').value = btn.dataset.title;
+    document.getElementById('edit-project-text').value = btn.dataset.text;
+    document.getElementById('edit-project-source_code').value = btn.dataset.source;
+    document.getElementById('edit-project-image').value = btn.dataset.image;
+    openModal('modal-edit-project');
+  });
+});
+
+// Messages
+document.querySelectorAll('.view-message-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('msg-name').innerText = btn.dataset.name;
+    document.getElementById('msg-email').innerText = btn.dataset.email;
+    document.getElementById('msg-subject').innerText = btn.dataset.subject;
+    document.getElementById('msg-text').innerText = btn.dataset.message;
+    openModal('modal-view-message');
+  });
+});
+</script>
+{% endblock %}
