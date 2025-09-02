@@ -58,7 +58,8 @@ def load_user(user_id):
 # Home route
 @app.route("/")
 def home():
-    return render_template("index.html")
+    all_projects = Projects.query.all()
+    return render_template("index.html", projects=all_projects) 
 
 # Login route (GET = show form, POST = authenticate user)
 @app.route("/login", methods=["GET", "POST"])
@@ -196,6 +197,6 @@ def contact():
     return render_template("contact.html", form=form)
 
 
-# Run the app in debug mode
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)

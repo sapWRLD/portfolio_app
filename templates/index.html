@@ -51,23 +51,17 @@
     </div>
     <!-- Project Showcase Section-->
      <div class="project-showcase">
+        {% for project in projects %}
+
         <div class="project-one">
             <article>
-                <img src="static/images/Flashcard.png" alt="Flashcard App">
+                <img src="{{url_for('static', filename= project.image)}}" alt="Flashcard App">
                 <p class="project-one-text">
-                    My Flashcard app where a user can input a list of questions and anwser, This allows the user to test their knowilige on the items.
-                    Its made in Python with the Flask framework.
+                    {{ project.text }}
                 </p>
             </article>
         </div>
-        <div class="project-two">
-            <article>
-                <img src="static/images/Todoapp.png" alt="ToDo App">
-                <p class="project-two-text">
-                    My Todo WebApp thats lets user put in tasks give them a tag an a priorty lever, user can delete ony made tasks end edit them.
-                    Soon you'll be able to sort them too!
-                </p>
-            </article>
-        </div>
+        {% endfor %}
+        
     </div>
 {% endblock %}
