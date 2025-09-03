@@ -91,19 +91,23 @@ def dashboard():
     )
 
 # Create User
-@app.route("/dashboard/create_user", methods=["POST"])
-@login_required
+@app.route("/create_user", methods=["GET", "POST"])
 def create_user():
-    username = request.form["user_name"]
-    password = request.form["password"]
-    if User.query.filter_by(user_name=username).first():
-        flash("Username already exists!", "error")
-    else:
+    if request.method == "POST":
+        username = request.form.get("name")
+        password = request.form.get("pass")
+        if not username or not password:
+            flash("Username and password are required!", "error")
+            return render_template("create_user.html")
+        if User.query.filter_by(user_name=username).first():
+            flash("Username already exists!", "error")
+            return render_template("create_user.html")
         new_user = User(user_name=username, password_hash=generate_password_hash(password))
         db.session.add(new_user)
         db.session.commit()
         flash("User created!", "success")
-    return redirect(url_for("dashboard"))
+        return redirect(url_for("login"))
+    return render_template("create_user.html")
 
 # Edit User
 @app.route("/dashboard/edit_user", methods=["POST"])
@@ -199,4 +203,6 @@ def contact():
 
 
 if __name__ == '__main__':
-    app.run()
+    with app.app_context():
+        db.create_all()
+    app.run(debug=True)
