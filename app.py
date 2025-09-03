@@ -1,6 +1,5 @@
 from flask import Flask, redirect, render_template, request, url_for, flash
 import os
-from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -27,8 +26,6 @@ def allow_file(filename):
 
 # Initialize database and login manager
 db = SQLAlchemy(app)
-with app.app_context():
-    db.create_all()
 login_manager = LoginManager(app)
 
 # User model for authentication
@@ -234,4 +231,6 @@ def contact():
 
 
 if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
     app.run()
