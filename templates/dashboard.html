@@ -21,6 +21,19 @@
   <div class="main">
     <h1>Welcome {{ name }}</h1>
 
+    <!-- Upload Section -->
+    <section id="upload">
+      <h2>Upload File</h2>
+     <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data">
+    <div>
+        <label for="image">Select Image:</label>
+        <input type="file" name="image" id="image" accept="image/*" required>
+    </div>
+    <div>
+        <button type="submit">Upload</button>
+    </div>
+    </form>
+
     <!-- Users Section -->
     <section id="users">
       <h2>Users</h2>

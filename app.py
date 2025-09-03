@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template, request, url_for, flash
+import os
 from flask_scss import Scss
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -6,15 +7,22 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, TextAreaField
 from wtforms.validators import DataRequired, Email, Length
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.utils import secure_filename
 from datetime import timedelta
 
 # Initialize Flask app
+UPLOAD_FOLDER = "static/images"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
 app = Flask(__name__)
 app.secret_key = "Tessa"   # Secret key for session management
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'  # SQLite DB file
 app.config["SESSION_PERMANENT"] = False  # Ensure the session is not permanent
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)# Shorten the lifetime of a session cookie (expires after inactivity)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+def allow_file(filename):
+    return "." in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # Initialize database and login manager
 db = SQLAlchemy(app)
@@ -60,6 +68,26 @@ def load_user(user_id):
 def home():
     all_projects = Projects.query.all()
     return render_template("index.html", projects=all_projects) 
+
+@app.route("/upload", methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method == 'POST':
+        if 'image' not in request.files:
+            return 'No file part', 400
+        file = request.files['image']
+        if file.filename =="":
+            return "No File selected", 400
+        if file  and allow_file(file.filename):
+            filename = secure_filename(file.filename)
+            os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+            save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(save_path)
+            return f"File uploaded successfully! Access it <a href='/{save_path}'>here</a>."
+        else:
+            return "Invalid file type", 400
+    return render_template("upload.html")
+    
 
 # Login route (GET = show form, POST = authenticate user)
 @app.route("/login", methods=["GET", "POST"])
