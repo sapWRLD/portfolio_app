@@ -16,7 +16,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 app = Flask(__name__)
 app.secret_key = "Tessa"   # Secret key for session management
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///portfolio.db'  # SQLite DB file
+basedir = os.path.abspath(os.path.dirname(__file__))
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'portfolio.db')
 app.config["SESSION_PERMANENT"] = False  # Ensure the session is not permanent
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(minutes=30)# Shorten the lifetime of a session cookie (expires after inactivity)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
@@ -26,6 +27,8 @@ def allow_file(filename):
 
 # Initialize database and login manager
 db = SQLAlchemy(app)
+with app.app_context():
+    db.create_all()
 login_manager = LoginManager(app)
 
 # User model for authentication
@@ -231,6 +234,4 @@ def contact():
 
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run()
